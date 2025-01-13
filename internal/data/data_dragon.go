@@ -31,22 +31,37 @@ func GetChampionsInRotation(version string, championIDs []int) ([]ChampionData, 
 		return nil, err
 	}
 
-	// Map champion keys (ID as string) to champion data
-	championsMap := make(map[int]ChampionData)
-	for _, champ := range allChampions.Data {
-		id, err := strconv.Atoi(champ.ID)
-		if err == nil {
-			championsMap[id] = champ
+	championIDSet := make(map[string]struct{})
+	for _, id := range championIDs {
+		championIDSet[strconv.Itoa(id)] = struct{}{} // Convert integer IDs to strings
+	}
+		// Create a map of numeric ID to champion name
+	numericIDToName := make(map[int]string)
+	for _, champion := range allChampions.Data {
+		champID, err := strconv.Atoi(champion.ID) // If numeric ID exists in the JSON, use it
+		if err != nil {
+			fmt.Printf("Skipping non-numeric ID for %s: %v\n", champion.ID, err)
+			continue
+		}
+		numericIDToName[champID] = champion.ID
+	}
+
+	fmt.Printf("Debug: Numeric ID to Name Map: %+v\n", numericIDToName)
+
+	var rotationChampions []ChampionData
+	for _, id := range championIDs {
+		name, exists := numericIDToName[id]
+		if !exists {
+			fmt.Printf("No name found for champion ID: %d\n", id)
+			continue
+		}
+		if champion, exists := allChampions.Data[name]; exists {
+			rotationChampions = append(rotationChampions, champion)
 		}
 	}
 
-	// Filter champions in rotation
-	var rotationChampions []ChampionData
-	for _, id := range championIDs {
-		if champ, exists := championsMap[id]; exists {
-			rotationChampions = append(rotationChampions, champ)
-		}
-	}
+
+
 
 	return rotationChampions, nil
 }

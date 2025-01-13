@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("Failed to fetch free champion IDs: %v", err)
 	}
 
-	fmt.Println(freeChampionIDs)
+	fmt.Println("Free rotation: ", freeChampionIDs)
 
 	// Fetch champion details for rotation
 	rotationChampions, err := data.GetChampionsInRotation(cfg.Version, freeChampionIDs)
@@ -31,7 +31,8 @@ func main() {
 
 	// Print champions in rotation
 	fmt.Println("Champions in Current Rotation:")
-	for _, champ := range rotationChampions {
+	for _, champ := range rotationChampions {	
 		fmt.Println(champ)
 	}
+
 }
