@@ -10,7 +10,7 @@ import (
 const riotBaseURL = "https://euw1.api.riotgames.com"
 
 // GetFreeChampionIds fetches the free champion IDs from the Riot API
-func GetFreeChampionIds(apiKey string) ([]int, error) {
+func GetFreeChampionIds(apiKey string) (*FreeChampionResponse, error) {
 	url := fmt.Sprintf("%s/lol/platform/v3/champion-rotations", riotBaseURL)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -33,10 +33,13 @@ func GetFreeChampionIds(apiKey string) ([]int, error) {
 		return nil, err
 	}
 
+	// Print response body as a string
+	fmt.Println(string(body))
+
 	var response FreeChampionResponse
 	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, err
 	}
 
-	return response.FreeChampionIds, nil
+	return &response, nil
 }

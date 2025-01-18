@@ -40,13 +40,11 @@ func GetChampionsInRotation(version string, championIDs []int) ([]ChampionData, 
 	for _, champion := range allChampions.Data {
 		champID, err := strconv.Atoi(champion.ID) // If numeric ID exists in the JSON, use it
 		if err != nil {
-			fmt.Printf("Skipping non-numeric ID for %s: %v\n", champion.ID, err)
 			continue
 		}
 		numericIDToName[champID] = champion.ID
 	}
 
-	fmt.Printf("Debug: Numeric ID to Name Map: %+v\n", numericIDToName)
 
 	var rotationChampions []ChampionData
 	for _, id := range championIDs {
